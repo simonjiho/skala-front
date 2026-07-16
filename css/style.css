@@ -1,6 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbit&display=swap');
 
 
+
+.header h1 {
+    animation: fade-in 1s ease-in-out both;
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
 :root {
     --main-color: #be6e29;
     --background-color: #EAD3AE;
@@ -18,24 +34,26 @@ td {
 }
 
 nav ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  padding: 0;
-  list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 0;
+    list-style: none;
 }
+
 nav a {
-  display: block;
-  padding: 10px 14px;
-  border: 1px solid var(--main-color);
-  border-radius: 999px;
-  transition: 0.2s;
+    display: block;
+    padding: 10px 14px;
+    border: 1px solid var(--main-color);
+    border-radius: 999px;
+    transition: 0.5s;
 }
+
 nav a:hover {
-  color: #fff8ed;
-  background-color: var(--sub-color);
-  text-decoration: none;
-  transform: translateY(-2px);
+    color: #fff8ed;
+    background-color: var(--sub-color);
+    text-decoration: none;
+    transform: scale(1.03) translateY(-2px);
 }
 
 
@@ -47,8 +65,9 @@ body {
     line-height: 1.3;
 }
 
-main {
-    margin-top: 24px;
+main,
+aside {
+    margin: 24px;
     padding: 12px 32px;
     background: var(--card-color);
     border: 1px solid #d8b98d;
@@ -67,16 +86,54 @@ nav {
     align-items: center;
 }
 
-section[class="section-center"] {
+.content {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+
+}
+
+.content>main,
+.content>aside {
+    flex: 1;
+    box-sizing: border-box;
+}
+
+
+.section-center {
     text-align: center;
     margin: 50px;
+}
+
+.album-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(300px, 1fr));
+    gap: 20px;
 }
 
 section img {
     max-width: 100%;
     height: auto;
-    margin-top: 50px;
+    margin-top: 30px;
 }
+
+
+main button {
+    padding: 10px 20px;
+    border: 1px solid var(--main-color);
+    border-radius: 999px;
+    background-color: var(--card-color);
+    color: var(--main-color);
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+main button:hover {
+    color: #fff8ed;
+    background-color: var(--sub-color);
+    transform: scale(1.03) translateY(-2px);
+}
+
 
 hr {
     margin: 50px 0px 50px 0px;
@@ -85,11 +142,27 @@ hr {
 }
 
 h1 {
-  margin: 32px 0 24px;
-  font-size: clamp(2rem, 5vw, 3rem);
-  letter-spacing: 0.04em;
+    margin: 32px 0 24px;
+    font-size: clamp(2rem, 5vw, 3rem);
+    letter-spacing: 0.04em;
 }
 
+.album-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border: 1px solid var(--main-color);
+    border-radius: 20px;
+    box-shadow: 0 10px 28px rgb(99 74 101 / 12%);
+    transition: 0.5s;
+}
+
+.album-item:hover {
+    transform: scale(1.03) translateY(-10px);
+    box-shadow: 0 40px 28px rgb(99 74 101 / 30%);
+
+}
 
 
 p,
@@ -106,4 +179,100 @@ a {
 a:hover {
     color: var(--sub-color);
     text-decoration: underline wavy 2px;
+}
+
+.mini-game-list {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.mini-game button {
+    font-size: small;
+    padding: 10px 20px;
+    border: 1px solid var(--main-color);
+    border-radius: 10px;
+    background-color: var(--card-color);
+    color: var(--main-color);
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+
+.mini-game button:hover {
+    color: #fff8ed;
+    background-color: var(--sub-color);
+    transform: scale(1.03) translateY(-2px);
+}
+
+
+.start-mini-game {
+    animation: shake 0.5s ease-in-out 5;
+}
+
+.start-mini-game:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+
+
+@keyframes shake {
+
+    from,
+    to {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+#city-select {
+    width: 100%;
+    height: 30px;
+    font-size:small;
+    padding: 10px 20px;
+    border: 1px solid var(--main-color);
+    border-radius: 10px;
+    background-color: var(--card-color);
+    color: var(--main-color);
+    cursor: pointer;
+}
+
+#weather-box p {
+    font-size: small;
+}
+
+@media (max-width: 786px) {
+
+    nav ul {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 0;
+        list-style: none;
+    }
+
+    body {
+        margin: 10px 20px 10px 20px;
+    }
+
+    .content {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .album-grid {
+        display: grid;
+        justify-items: center;
+        grid-template-columns: repeat(1, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+
 }
