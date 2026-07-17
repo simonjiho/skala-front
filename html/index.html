@@ -49,9 +49,7 @@
 
             <section class="live-info">
                 <h2>실시간 정보</h2>
-                <p id="current-location">📍 현재 위치를 확인하는 중...</p>
                 <p>현재 위치: 광주광역시 광산구 📌</p>
-
                 <div class="worldwide-weather">
                     <h3>🌤️실시간 세계 날씨</h3>
                     <select id="city-select">
@@ -72,7 +70,26 @@
                         </option>
                     </select>
 
-                    <div id="weather-box"></div>
+                    <div class="weather-dashboard">
+                        <div id="weather-box"></div>
+
+                        <div class="weather-map-panel">
+                            <div class="weather-map-frame">
+                                <iframe
+                                    id="weather-map"
+                                    title="선택한 도시의 기상 지도"
+                                    loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade"
+                                    allowfullscreen>
+                                </iframe>
+                                <div class="weather-map-click-shield"
+                                     aria-hidden="true"></div>
+                                <div id="weather-map-loading" aria-live="polite">
+                                    기상 지도를 불러오는 중...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             </section>

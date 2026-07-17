@@ -1,11 +1,87 @@
 const citySelect = document.getElementById("city-select");
 const weatherBox = document.getElementById("weather-box");
-const currentLocation = document.getElementById("current-location");
+const weatherMap = document.getElementById("weather-map");
+const weatherMapLoading = document.getElementById("weather-map-loading");
+const weatherLayers = ["temp", "rh", "wind"];
+let selectedWeatherLayer = "temp";
+let weatherLayerTimer;
 
 // console.log("weather.js 연결 성공");
 
-citySelect.addEventListener("change", showCityInfo);
+citySelect.addEventListener("change", function () {
+    showCityInfo();
+    resetWeatherLayerTimer();
+});
+weatherBox.addEventListener("click", function (event) {
+    const trigger = event.target.closest(".weather-map-trigger");
+
+    if (!trigger) {
+        return;
+    }
+
+    selectedWeatherLayer = trigger.dataset.layer;
+    updateWeatherLayerButtons();
+    updateWeatherMap();
+    resetWeatherLayerTimer();
+});
+weatherMap.addEventListener("load", function () {
+    weatherMapLoading.classList.add("is-hidden");
+});
 showCityInfo(); // 페이지 열리자 마자 실행
+resetWeatherLayerTimer();
+
+function updateWeatherLayerButtons() {
+    weatherBox.querySelectorAll(".weather-map-trigger").forEach(function (button) {
+        const isActive = button.dataset.layer === selectedWeatherLayer;
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-pressed", isActive);
+    });
+}
+
+function resetWeatherLayerTimer() {
+    clearTimeout(weatherLayerTimer);
+
+    weatherLayerTimer = setTimeout(function changeWeatherLayer() {
+        const currentIndex = weatherLayers.indexOf(selectedWeatherLayer);
+        const nextIndex = (currentIndex + 1) % weatherLayers.length;
+
+        selectedWeatherLayer = weatherLayers[nextIndex];
+        updateWeatherLayerButtons();
+        updateWeatherMap();
+
+        weatherLayerTimer = setTimeout(changeWeatherLayer, 12000);
+    }, 12000);
+}
+
+function updateWeatherMap() {
+    const selectedOption =
+        citySelect.options[citySelect.selectedIndex];
+
+    const latitude = selectedOption.dataset.latitude;
+    const longitude = selectedOption.dataset.longitude;
+
+    const params = new URLSearchParams({
+        type: "map",
+        location: "coordinates",
+        metricRain: "mm",
+        metricTemp: "°C",
+        metricWind: "km/h",
+        zoom: "5",
+        overlay: selectedWeatherLayer,
+        product: "ecmwf",
+        level: "surface",
+        lat: latitude,
+        lon: longitude,
+        detailLat: latitude,
+        detailLon: longitude,
+        // marker: "true",
+        detail: "false",
+        calendar: "now"
+    });
+
+    weatherMapLoading.classList.remove("is-hidden");
+    weatherMap.src = `https://embed.windy.com/embed.html?${params.toString()}`;
+}
 
 async function showCityInfo() {
     const selectedOption =
@@ -17,6 +93,7 @@ async function showCityInfo() {
 
 
     weatherBox.innerHTML = `<p>🌍 ${cityName} 날씨를 불러오는 중...</p>`;
+    updateWeatherMap();
 
 
     try {
@@ -40,9 +117,21 @@ async function showCityInfo() {
       <h4>📍 ${cityName} 날씨</h4>
       <p>↔️ 위도 (Latitude): ${latitude}</p>
       <p>↕️ 경도 (Longitude): ${longitude}</p>
-      <p>🌡️ 현재 기온: ${current.temperature_2m}℃</p>
-      <p>💧 습도: ${current.relative_humidity_2m}%</p>
-      <p>💨 풍속: ${current.wind_speed_10m} km/h</p>
+      <button class="weather-map-trigger ${selectedWeatherLayer === "temp" ? "is-active" : ""}"
+              type="button" data-layer="temp"
+              aria-pressed="${selectedWeatherLayer === "temp"}">
+        🌡️ 현재 기온: ${current.temperature_2m}℃
+      </button>
+      <button class="weather-map-trigger ${selectedWeatherLayer === "rh" ? "is-active" : ""}"
+              type="button" data-layer="rh"
+              aria-pressed="${selectedWeatherLayer === "rh"}">
+        💧 습도: ${current.relative_humidity_2m}%
+      </button>
+      <button class="weather-map-trigger ${selectedWeatherLayer === "wind" ? "is-active" : ""}"
+              type="button" data-layer="wind"
+              aria-pressed="${selectedWeatherLayer === "wind"}">
+        💨 풍속: ${current.wind_speed_10m} km/h
+      </button>
     `;
     } catch (error) {
         weatherBox.innerHTML = `
